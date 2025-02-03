@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import numbersService from './services/numbers'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
@@ -128,6 +127,7 @@ const App = () => {
           setNotificationMessage(null)
           }, 5000)
         }).catch(error => {
+          console.log("error:", error)
           setErrorMessage(
             `Information of ${person.name} has already been removed from server`
           )
