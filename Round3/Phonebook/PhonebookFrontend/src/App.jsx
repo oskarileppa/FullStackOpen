@@ -65,13 +65,22 @@ const App = () => {
             setPersons(persons.map(p => p.id !== person.id ? p : returnedPerson))
             setNewName('')
             setNewNumber('')
+            setNotificationMessage(
+              `Updated the number of ${newName}`
+            )
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 5000)
+          }) 
+          .catch(error => {
+            console.log(error.response.data.error)
+            setErrorMessage(
+              error.response.data.error
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
           })
-          setNotificationMessage(
-            `Updated the number of ${newName}`
-          )
-          setTimeout(() => {
-            setNotificationMessage(null)
-          }, 5000)
       }
       return
     }
@@ -83,39 +92,50 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
-      })
-      setNotificationMessage(
-        `Added ${newName}`
-      )
-      setTimeout(() => {
-        setNotificationMessage(null)
-      }, 5000)
-  }
-
-  const deletePerson = (id) => {
-
-    const person = persons.find(person => person.id === id)
-  
-    if(window.confirm('Do you really want to delete this person?')) {
-    numbersService
-      .deleteNumber(id)
-        .then(deletedNumber => {
-        setPersons(persons.filter(p => p.id !== deletedNumber.id))
         setNotificationMessage(
-          `Deleted ${person.name}`
+          `Added ${newName}`
         )
         setTimeout(() => {
           setNotificationMessage(null)
         }, 5000)
-      }).catch(error => {
+      })
+      .catch(error => {
+        console.log(error.response.data.error)
         setErrorMessage(
-          `Information of ${person.name} has already been removed from server`
+          error.response.data.error
         )
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
       })
-    }
+  }
+
+  const deletePerson = (id) => {
+    console.log("Persons", persons)
+
+    const person = persons.find(person => person.id === id)
+  
+    if(window.confirm(`Do you really want to delete ${person.name}?`)) {
+      console.log("To be deleted id:", id)
+      numbersService
+        .deleteNumber(id)
+          .then(status => {
+          console.log("status:", status)
+          console.log("deletedNumber:", person)
+          setPersons(persons.filter(p => p.id !== person.id))
+          setNotificationMessage(`Deleted ${person.name}`)
+          setTimeout(() => {
+          setNotificationMessage(null)
+          }, 5000)
+        }).catch(error => {
+          setErrorMessage(
+            `Information of ${person.name} has already been removed from server`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
+    } 
   }
 
   const personsToShow = filter === '' ? persons : persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))

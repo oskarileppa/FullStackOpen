@@ -24,7 +24,7 @@ const updateNumber = (id, newObject) => {
 
 const deleteNumber = (id) => {
   const request = axios.delete(`${baseUrl}/${id}`)
-  return request.then(response => response.data)
+  return request.then(response => response.status)
 }
 
 export default { 
